@@ -1,0 +1,119 @@
+package abc;
+import java.io.*;
+
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+
+//printing format is on traversing each node if childs with spell match it print all its childs with true or false
+
+//Sample Input:
+//5
+//hello
+//world
+//he
+//sad
+//wqs
+//3
+//hello
+//world
+//notin
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		Tree tries = new Tree();
+		int words = sc.nextInt();
+		while(words-- > 0) { // this loop will read a string from input and place it in tries data structure
+			String word = sc.next();
+			tries.AddToTries(word);
+		}
+		int compare = sc.nextInt();
+		while(compare-- > 0) { // this loop will read a string from input and check spell in tries data structure
+			tries.check(sc.next());
+		}
+	  
+	}
+    
+}
+class Node{
+	public char data;
+	public HashMap<Character,Node> childs;
+	public boolean isExist = false;
+	public Node(char val) {
+	
+		data = val;
+	}
+	public void add(char toAdd) {
+		if(childs == null) {
+			childs = new HashMap<Character,Node>();
+			for(char i = 'a'; i <= 'z';i++) {
+				childs.put(i,new Node(i));
+			}
+		}
+		childs.get(toAdd).isExist = true;
+	}
+	public boolean isExist(char toCheck) {
+		if(childs == null) {
+			childs = new HashMap<Character,Node>();
+			for(char i = 'a'; i <= 'z';i++) {
+				childs.put(i,new Node(i));
+			}
+		}
+		return childs.get(toCheck).isExist;
+	}
+	public Node getChild(char Child) {
+		return childs.get(Child);
+	}
+	
+
+}
+class Tree {
+	Node root;
+	public Tree() {
+		root = new Node('*');
+	}
+	public void AddToTries(String a) {
+		char[] arr = a.toCharArray();
+		Node current = root;
+		for(int i = 0; i < arr.length;i++) {
+			if(current.isExist(arr[i])) {
+				current = current.getChild(arr[i]);
+			}else {
+				current.add(arr[i]);
+				current = current.getChild(arr[i]);
+			}
+		
+		}
+		
+	}
+	public boolean check(String a) {
+		char[] arr = a.toCharArray();
+		Node current = root;
+		
+		for(int i = 0; i < arr.length;i++) {
+			System.out.print(arr[i] + " --> ");
+			if(current.isExist(arr[i])) {
+				
+				for(char j = 'a'; j <= 'z';j++) {
+					System.out.print("( " + current.childs.get(j).data +" " + current.getChild(j).isExist + " ) ");
+				}
+				current = current.getChild(arr[i]);
+			}else {
+				System.out.println();
+				System.out.println("NOT FOUND");
+				return false;
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println("FOUND");
+		System.out.println();
+		return true;
+	}
+}
